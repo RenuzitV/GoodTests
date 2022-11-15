@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">COSC2657_Assignment 1</string>
+    <string name="button">+</string>
+    <string name="emptyString" />
+    <string name="addNewQuiz">Add New Quiz</string>
+    <string name="quizContainer">Quiz List</string>
+    <string name="description">Description</string>
+    <string name="take_the_test">Take the test</string>
+    <string name="edit_quiz">Edit Quiz</string>
+    <string name="questions">Questions:</string>
+    <string name="_0">0</string>
+    <string name="remove_question">Remove Question</string>
+    <string name="add_new_question">Add New Question</string>
+    <string name="go_to_next_question">Go to next question</string>
+    <string name="go_to_last_question">Go to last question</string>
+    <string name="edit_quiz_name">Edit quiz name</string>
+    <string name="question">question</string>
+    <string name="add_new_quiz">add new quiz</string>
+    <string name="add_new_answer">add answer</string>
+    <dimen name="shadowPadding">10dp</dimen>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
