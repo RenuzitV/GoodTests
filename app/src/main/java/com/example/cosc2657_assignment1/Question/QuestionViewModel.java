@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 public class QuestionViewModel extends ViewModel {
-        private final MutableLiveData<Question> selectedItem = new MutableLiveData<Question>(new Question());
+        private final MutableLiveData<Question> selectedItem = new MutableLiveData<Question>();
 
         public void selectItem(Question question) {
             selectedItem.setValue(question);

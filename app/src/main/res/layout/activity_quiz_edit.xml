@@ -15,11 +15,17 @@
         android:layout_weight="1"
         tools:layout="@layout/fragment_quiz_view" />
 
+    <TextView
+        android:id="@+id/questioncounter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/_0" />
+
     <LinearLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
         android:baselineAligned="false"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"

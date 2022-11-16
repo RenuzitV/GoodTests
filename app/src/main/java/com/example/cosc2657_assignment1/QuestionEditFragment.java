@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.example.cosc2657_assignment1.Question.Question;
 import com.example.cosc2657_assignment1.Question.QuestionViewModel;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,36 +29,21 @@ import com.example.cosc2657_assignment1.Question.QuestionViewModel;
 public class QuestionEditFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     EditText questionDescription;
 
-    QuestionViewModel viewModel;
+    QuestionContainerAdapter adapter;
+
+    Question question;
 
     public QuestionEditFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment quiz_view.
-     */
     // TODO: Rename and change types and number of parameters
-    public static QuestionEditFragment newInstance(String param1, String param2) {
+    public static QuestionEditFragment newInstance() {
         QuestionEditFragment fragment = new QuestionEditFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,31 +52,48 @@ public class QuestionEditFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            question = (Question) getArguments().getSerializable("question");
         }
-
-        //get parent activity for ViewModelProvider
-        viewModel = new ViewModelProvider(requireActivity()).get(QuestionViewModel.class);
-
-        questionDescription = new EditText(getContext());
-
-        Button button = new Button(getContext());
-
-        button.setText(R.string.add_new_answer);
-
-        RecyclerView recyclerView = new RecyclerView(getContext());
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        QuestionContainerAdapter adapter = new QuestionContainerAdapter(getContext(), viewModel.getSelectedItem().getValue().getAnswers());
-//        adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
+        else {
+            question = new Question();
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_quiz_view, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        questionDescription = view.findViewById(R.id.quizdescription);
+        questionDescription.setText(question.getQuestionName());
+        RecyclerView recyclerView = new RecyclerView(getContext());
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new QuestionContainerAdapter(getContext(), question.getAnswers());
+    }
+
+    public String getQuestionDescription(){
+        return questionDescription.getText().toString();
+    }
+
+    public ArrayList<String> getAnswers(){
+        return question.getAnswers();
+    }
+
+    public void setQuestionDescription(String text){
+        questionDescription.setText(text);
+    }
+
+    public void setQuestion(Question question){
+        this.question = question;
+        questionDescription.setText(question.getQuestionName());
+        adapter.notifyDataSetChanged();
     }
 }
