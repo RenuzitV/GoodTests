@@ -1,36 +1,31 @@
 package com.example.cosc2657_assignment1;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.cosc2657_assignment1.Question.Question;
-import com.example.cosc2657_assignment1.Question.QuestionViewModel;
+import com.example.cosc2657_assignment1.Answer.Answer;
 import com.example.cosc2657_assignment1.Quiz.Quiz;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class QuizEditActivity extends AppCompatActivity {
 
@@ -39,6 +34,9 @@ public class QuizEditActivity extends AppCompatActivity {
     FloatingActionButton addButton;
     FloatingActionButton nextButton;
 
+    Button addAnswerButton;
+    Button removeAnswerButton;
+
     EditText questionName;
 
     RecyclerView questionItems;
@@ -46,9 +44,11 @@ public class QuizEditActivity extends AppCompatActivity {
 
     TextView counterText;
 
-    QuestionViewModel viewModel;
-
     Quiz quiz;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference cRef = db.collection(Quiz.CollectionName);
+    DocumentReference dRef;
 
     int questionIndex = 0;
 
@@ -73,6 +73,9 @@ public class QuizEditActivity extends AppCompatActivity {
         questionName = findViewById(R.id.questionDescription);
         questionItems = findViewById(R.id.questionItems);
         questionItems.setLayoutManager(new LinearLayoutManager(this));
+
+        addAnswerButton = findViewById(R.id.buttonAddAnswer);
+        removeAnswerButton = findViewById(R.id.buttonRemoveAnswer);
         //////////GET VIEW
 
         //GET INTENT QUIZ
@@ -80,6 +83,7 @@ public class QuizEditActivity extends AppCompatActivity {
 
         //HAS TO BE THE FIRST INIT OF DATA
         quiz = (Quiz) intent.getExtras().get("quiz");
+        dRef = cRef.document(quiz.getQid());
 
         if (quiz == null){
             Toast.makeText(this, "Error, could not find this quiz", Toast.LENGTH_SHORT).show();
@@ -92,7 +96,7 @@ public class QuizEditActivity extends AppCompatActivity {
         }
 
         //set adapter for recycler view
-        adapter = new QuestionContainerAdapter(this, quiz.getQuestions().get(questionIndex).getAnswers());;
+        adapter = new QuestionContainerAdapter(this, quiz.getQuestions().get(questionIndex).getAnswers());
         questionItems.setAdapter(adapter);
 
         //ON CLICK LISTENER
@@ -106,7 +110,6 @@ public class QuizEditActivity extends AppCompatActivity {
             //handle back button
             else {
                 questionIndex -= 1;
-                viewModel.selectItem(quiz.getQuestions().get(questionIndex));
                 refreshFragment();
             }
         });
@@ -120,7 +123,6 @@ public class QuizEditActivity extends AppCompatActivity {
             }
             else {
                 questionIndex += 1;
-                viewModel.selectItem(quiz.getQuestions().get(questionIndex));
                 refreshFragment();
             }
         });
@@ -134,7 +136,6 @@ public class QuizEditActivity extends AppCompatActivity {
             builder.setPositiveButton(android.R.string.yes, (dialog, which) -> {
                 quiz.getQuestions().remove(questionIndex);
                 if (questionIndex >= quiz.getQuestions().size()) questionIndex--;
-                viewModel.selectItem(quiz.getQuestions().get(questionIndex));
                 refreshFragment();
             });
             builder.setNegativeButton(android.R.string.no, (dialog, which) -> {});
@@ -145,13 +146,15 @@ public class QuizEditActivity extends AppCompatActivity {
 
         addButton.setOnClickListener(v -> {
             if (quiz.getQuestions().size() > 20) {
+                Toast.makeText(this, "You have too many questions already!", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (questionIndex == -1) questionIndex = 0;
-            quiz.addQuestion(questionIndex);
-            viewModel.selectItem(quiz.getQuestions().get(questionIndex));
+            quiz.addQuestion(questionIndex + 1);
+            ++questionIndex;
             refreshFragment();
         });
+
         //ON CLICK LISTENER
 
         //listener for questionName
@@ -171,13 +174,27 @@ public class QuizEditActivity extends AppCompatActivity {
                 quiz.getQuestions().get(questionIndex).setQuestionName(s.toString());
             }
         });
-        
-        setCounterText();
+
+        addAnswerButton.setOnClickListener(v -> adapter.addItem(quiz.getQuestions().get(questionIndex).getAnswers().size()));
+
+        removeAnswerButton.setOnClickListener(v -> {
+            if (quiz.getQuestions().get(questionIndex).getAnswers().size() > 1) adapter.removeItem(quiz.getQuestions().get(questionIndex).getAnswers().size()-1);
+        });
+
+
+        refreshFragment();
     }
 
     void refreshFragment(){
         if (questionIndex < 0 || questionIndex >= quiz.getQuestions().size()) return;
+
+        if (quiz.getQuestions().get(questionIndex).getAnswers().size() == 0){
+            quiz.getQuestions().get(questionIndex).getAnswers().add(new Answer());
+        }
+
         questionName.setText(quiz.getQuestions().get(questionIndex).getQuestionName());
+
+        adapter.setData(quiz.getQuestions().get(questionIndex).getAnswers());
 
         setCounterText();
         System.out.println("refreshed");
@@ -188,12 +205,42 @@ public class QuizEditActivity extends AppCompatActivity {
         counterText.setText(res);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
     // this event will enable the back
     // function to the button on press
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            this.finish();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Exiting");
+            builder.setMessage("You will lose all unsaved changes.");
+            builder.setPositiveButton("confirm", null);
+            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
+                dialog.dismiss();
+                finish();
+            });
+            return true;
+        }
+        else if (item.getItemId() == R.id.action_save){
+            dRef.set(quiz).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Intent intent = new Intent();
+                    intent.putExtra("quiz", quiz);
+                    setResult(RESULT_OK, intent);
+                    Toast.makeText(this, "Quiz saved successfully!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Quiz save failed!", Toast.LENGTH_LONG).show();
+                }
+            });
             return true;
         }
         return super.onOptionsItemSelected(item);

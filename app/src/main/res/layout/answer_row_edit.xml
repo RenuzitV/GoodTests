@@ -6,41 +6,37 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:id="@+id/asd"
-        android:layout_width="match_parent"
+        android:id="@+id/linearLayout4"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_margin="10dp"
         android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/textView4"
+            android:id="@+id/textView5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/dash" />
+            android:text="@string/dash"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-        <TextView
-            android:id="@+id/answerDescription2"
+        <EditText
+            android:id="@+id/answerDescription"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:gravity="start|center_vertical"
+            android:inputType="textMultiLine|text"
+            android:maxLength="20"
             android:text="@string/description"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <CheckBox
-            android:id="@+id/checkBox"
+            android:id="@+id/checkButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
     </LinearLayout>
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintTop_toBottomOf="@id/asd" />
 </androidx.constraintlayout.widget.ConstraintLayout>

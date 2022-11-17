@@ -1,10 +1,5 @@
 package com.example.cosc2657_assignment1;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
@@ -14,6 +9,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.cosc2657_assignment1.Quiz.Quiz;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -45,35 +46,27 @@ public class QuizOverviewActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         quiz = (Quiz) intent.getExtras().get("quiz");
+        dRef = cRef.document(quiz.getQid());
 
         description = findViewById(R.id.Description);
         questionCount = findViewById(R.id.QuestionCount);
         editQuiz = findViewById(R.id.editButton);
         editQuizName = findViewById(R.id.editQuizNameButton);
 
-        dRef = cRef.document(quiz.getQid());
 
         description.setText(quiz.getQuizName());
         questionCount.setText(String.valueOf(quiz.getQuestions().size()));
 
-        editQuiz.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent editIntent = new Intent(QuizOverviewActivity.this, QuizEditActivity.class);
-                editIntent.putExtra("quiz", quiz);
-                startActivity(editIntent);
-            }
-        });
-
         editQuizName.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(QuizOverviewActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(true);
             builder.setTitle("Quiz Name");
             // Set up the input
-            final EditText input = new EditText(this);
+            EditText input = new EditText(this);
             // Specify the type of input expected
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             input.setText(quiz.getQuizName());
+            input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
             builder.setView(input);
             builder.setPositiveButton("confirm", null);
             builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
@@ -93,9 +86,23 @@ public class QuizOverviewActivity extends AppCompatActivity {
             });
         });
 
-
+        editQuiz.setOnClickListener(v -> {
+            Intent editIntent = new Intent(QuizOverviewActivity.this, QuizEditActivity.class);
+            editIntent.putExtra("quiz", quiz);
+            startActivityForResult(editIntent, 1);
+        });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                quiz = (Quiz) data.getExtras().get("quiz");
+                questionCount.setText(String.valueOf(quiz.getQuestions().size()));
+            }
+        }
+    }
     // this event will enable the back
     // function to the button on press
     @Override

@@ -1,5 +1,8 @@
 package com.example.cosc2657_assignment1.Question;
 
+import com.example.cosc2657_assignment1.Answer.Answer;
+import com.google.firebase.firestore.Exclude;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,14 +10,11 @@ import java.util.List;
 public class Question implements Serializable {
     String questionName;
 
-    ArrayList<String> answers;
-
-    int correctAnswerIndex;
+    ArrayList<Answer> answers;
 
     public Question() {
         this.questionName = "";
         this.answers = new ArrayList<>();
-        this.correctAnswerIndex = -1;
     }
 
     public String getQuestionName() {
@@ -25,25 +25,23 @@ public class Question implements Serializable {
         this.questionName = questionName;
     }
 
-    public ArrayList<String> getAnswers() {
+    public ArrayList<Answer> getAnswers() {
         return answers;
     }
 
-    public void setAnswers(ArrayList<String> answers) {
+    public void setAnswers(ArrayList<Answer> answers) {
         this.answers = answers;
     }
 
-    public int getCorrectAnswerIndex() {
-        return correctAnswerIndex;
-    }
-
-    public String getCorrectAnswer(){
-        if (correctAnswerIndex == -1 || answers.size() <= correctAnswerIndex) return null;
-        return answers.get(correctAnswerIndex);
-    }
-
-    public void setCorrectAnswerIndex(int correctAnswerIndex) {
-        this.correctAnswerIndex = correctAnswerIndex;
+    @Exclude
+    public List<Answer> getCorrectAnswers(){
+        List<Answer> correctAnswers = new ArrayList<>();
+        for (Answer a: answers) {
+            if (a.isCorrect()) {
+                correctAnswers.add(a);
+            }
+        }
+        return correctAnswers;
     }
 
     public boolean removeAnswer(int index){
@@ -56,7 +54,7 @@ public class Question implements Serializable {
         return true;
     }
 
-    public void addAnswer(String s){
+    public void addAnswer(Answer s){
         if (answers == null) answers = new ArrayList<>();
         answers.add(s);
     }

@@ -20,4 +20,6 @@
     <dimen name="shadowPadding">10dp</dimen>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="delete_answer">Delete Answer</string>
+    <string name="dash">-</string>
 </resources>

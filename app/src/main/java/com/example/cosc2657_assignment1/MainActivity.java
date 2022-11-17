@@ -159,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements SwipeToDeleteCall
                 snackbar.setAction("RETRY", view -> db.collection(Quiz.CollectionName).document(item.qid).delete().addOnCompleteListener(deleteHandler(item, position)));
                 snackbar.setActionTextColor(Color.YELLOW);
                 snackbar.show();
-
             }
         };
     }

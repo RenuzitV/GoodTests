@@ -22,21 +22,8 @@ public class Quiz implements Serializable {
     ArrayList<Question> questions;
 
     public Quiz() {
-        this.quizName = "Assignment 1 - test";
+        this.quizName = "Assignment 1";
         this.questions = new ArrayList<>();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Quiz quiz = (Quiz) o;
-        return Objects.equals(quizName, quiz.quizName) && Objects.equals(questions, quiz.questions);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(quizName, questions);
     }
 
     public String getQid() {

@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.cosc2657_assignment1.Question.Question;
 import com.example.cosc2657_assignment1.Quiz.Quiz;
 
 import java.util.List;
