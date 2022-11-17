@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements SwipeToDeleteCall
         return task -> {
             if (task.isSuccessful()){
                 Snackbar snackbar = Snackbar
-                        .make(layout, "Item was removed from the list.", Snackbar.LENGTH_LONG);
+                        .make(layout, "Quiz " + item.getQuizName() + " was removed from the list.", Snackbar.LENGTH_LONG);
                 snackbar.setAction("UNDO", view -> {
                     adapter.restoreItem(item, position);
                     cRef.document(item.getQid()).set(item)

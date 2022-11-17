@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,16 +34,17 @@ import java.util.ArrayList;
 
 public class QuizEditActivity extends AppCompatActivity {
 
-    FragmentManager fragmentManager;
-
     FloatingActionButton backButton;
     FloatingActionButton removeButton;
     FloatingActionButton addButton;
     FloatingActionButton nextButton;
 
-    TextView counterText;
+    EditText questionName;
 
-    QuestionEditFragment fragment;
+    RecyclerView questionItems;
+    QuestionContainerAdapter adapter;
+
+    TextView counterText;
 
     QuestionViewModel viewModel;
 
@@ -55,7 +58,6 @@ public class QuizEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quiz_edit);
 
 
-
         //////////GET VIEW
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -65,11 +67,13 @@ public class QuizEditActivity extends AppCompatActivity {
         removeButton = findViewById(R.id.removeButton);
         addButton = findViewById(R.id.addButton);
         nextButton = findViewById(R.id.nextButton);
-        counterText = findViewById(R.id.questioncounter);
-        //////////GET VIEW
 
-        ///VIEW MODEL FOR QUESTION
-        viewModel = new ViewModelProvider(this).get(QuestionViewModel.class);
+        counterText = findViewById(R.id.questioncounter);
+
+        questionName = findViewById(R.id.questionDescription);
+        questionItems = findViewById(R.id.questionItems);
+        questionItems.setLayoutManager(new LinearLayoutManager(this));
+        //////////GET VIEW
 
         //GET INTENT QUIZ
         Intent intent = getIntent();
@@ -77,39 +81,21 @@ public class QuizEditActivity extends AppCompatActivity {
         //HAS TO BE THE FIRST INIT OF DATA
         quiz = (Quiz) intent.getExtras().get("quiz");
 
-        if (quiz.getQuestions().size() == 0){
-            quiz.addQuestion(0);
-        }
-
-        viewModel.selectItem(quiz.getQuestions().get(questionIndex));
-
-        //init fragment manager
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        //create fragmentcontainerview
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("question", quiz.getQuestions().get(0));
-        fragment = new QuestionEditFragment();
-        fragment.setArguments(bundle);
-        fragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainerView, fragment)
-                .setReorderingAllowed(true)
-                .addToBackStack(null)
-                .commit();
-        //init fragment manager
-
-        //save question back to list of questions
-        viewModel.getSelectedItem().observe(this, item -> {
-            if (questionIndex >= 0 && questionIndex < quiz.getQuestions().size()){
-                quiz.getQuestions().set(questionIndex, item);
-            }
-            setCounterText();
-        });
-
         if (quiz == null){
             Toast.makeText(this, "Error, could not find this quiz", Toast.LENGTH_SHORT).show();
             finish();
         }
 
+        //init question to make sure it is not null
+        if (quiz.getQuestions().size() == 0){
+            quiz.addQuestion(0);
+        }
+
+        //set adapter for recycler view
+        adapter = new QuestionContainerAdapter(this, quiz.getQuestions().get(questionIndex).getAnswers());;
+        questionItems.setAdapter(adapter);
+
+        //ON CLICK LISTENER
         backButton.setOnClickListener(v -> {
             if (questionIndex == -1){
                 Toast.makeText(this, "You do not have any questions for this quiz yet!", Toast.LENGTH_SHORT).show();
@@ -121,7 +107,7 @@ public class QuizEditActivity extends AppCompatActivity {
             else {
                 questionIndex -= 1;
                 viewModel.selectItem(quiz.getQuestions().get(questionIndex));
-                refreshFragment(questionIndex + 1);
+                refreshFragment();
             }
         });
 
@@ -135,7 +121,7 @@ public class QuizEditActivity extends AppCompatActivity {
             else {
                 questionIndex += 1;
                 viewModel.selectItem(quiz.getQuestions().get(questionIndex));
-                refreshFragment(questionIndex - 1);
+                refreshFragment();
             }
         });
 
@@ -149,7 +135,7 @@ public class QuizEditActivity extends AppCompatActivity {
                 quiz.getQuestions().remove(questionIndex);
                 if (questionIndex >= quiz.getQuestions().size()) questionIndex--;
                 viewModel.selectItem(quiz.getQuestions().get(questionIndex));
-                refreshFragment(-1);
+                refreshFragment();
             });
             builder.setNegativeButton(android.R.string.no, (dialog, which) -> {});
 
@@ -164,26 +150,35 @@ public class QuizEditActivity extends AppCompatActivity {
             if (questionIndex == -1) questionIndex = 0;
             quiz.addQuestion(questionIndex);
             viewModel.selectItem(quiz.getQuestions().get(questionIndex));
-            refreshFragment(questionIndex+1);
+            refreshFragment();
         });
+        //ON CLICK LISTENER
+
+        //listener for questionName
+        questionName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                quiz.getQuestions().get(questionIndex).setQuestionName(s.toString());
+            }
+        });
+        
+        setCounterText();
     }
 
-    void refreshFragment(int prevIndex){
-//        if (!fragment.isInLayout()){
-//            System.out.println("cannot refresh fragment");
-//            return;
-//        }
-        Question question = new Question();
-        if (prevIndex >= 0 && prevIndex < quiz.getQuestions().size()) {
-            question.setQuestionName(fragment.getQuestionDescription());
-            question.setAnswers(fragment.getAnswers());
-            quiz.getQuestions().set(prevIndex, question);
-        }
+    void refreshFragment(){
+        if (questionIndex < 0 || questionIndex >= quiz.getQuestions().size()) return;
+        questionName.setText(quiz.getQuestions().get(questionIndex).getQuestionName());
 
-        question = quiz.getQuestions().get(questionIndex);
-        fragment.setQuestion(question);
-//        fragment.getParentFragmentManager().beginTransaction().detach(fragment).commit();
-//        fragment.getParentFragmentManager().beginTransaction().attach(fragment).commit();
         setCounterText();
         System.out.println("refreshed");
     }

@@ -7,13 +7,52 @@
     android:orientation="vertical"
     tools:context=".QuizEditActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
-        android:name="com.example.cosc2657_assignment1.QuestionEditFragment"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        tools:layout="@layout/fragment_quiz_view" />
+        tools:context=".QuestionEditFragment">
+
+        <!-- TODO: Update blank fragment layout -->
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="auto"
+                android:focusableInTouchMode="true">
+
+                <EditText
+                    android:id="@+id/questionDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="32dp"
+                    android:inputType="textNoSuggestions"
+                    android:text="@string/description"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/questionItems"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="32dp"
+                    android:maxWidth="280dp"
+                    app:layout_constraintStart_toStartOf="@+id/questionDescription"
+                    app:layout_constraintTop_toBottomOf="@+id/questionDescription" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </RadioGroup>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
         android:id="@+id/questioncounter"

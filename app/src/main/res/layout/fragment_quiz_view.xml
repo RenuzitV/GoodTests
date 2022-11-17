@@ -21,7 +21,7 @@
             android:layout_height="match_parent">
 
             <EditText
-                android:id="@+id/quizdescription"
+                android:id="@+id/questionDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -32,13 +32,13 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/quizItems"
+                android:id="@+id/questionItems"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:maxWidth="280dp"
-                app:layout_constraintStart_toStartOf="@+id/quizdescription"
-                app:layout_constraintTop_toBottomOf="@+id/quizdescription" />
+                app:layout_constraintStart_toStartOf="@+id/questionDescription"
+                app:layout_constraintTop_toBottomOf="@+id/questionDescription" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

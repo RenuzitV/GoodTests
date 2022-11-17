@@ -3,21 +3,15 @@ package com.example.cosc2657_assignment1;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 
 import com.example.cosc2657_assignment1.Question.Question;
-import com.example.cosc2657_assignment1.Question.QuestionViewModel;
 
 import java.util.ArrayList;
 
@@ -71,7 +65,7 @@ public class QuestionEditFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        questionDescription = view.findViewById(R.id.quizdescription);
+        questionDescription = view.findViewById(R.id.questionDescription);
         questionDescription.setText(question.getQuestionName());
         RecyclerView recyclerView = new RecyclerView(getContext());
 
