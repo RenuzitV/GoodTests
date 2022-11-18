@@ -26,6 +26,16 @@ public class Quiz implements Serializable {
         this.questions = new ArrayList<>();
     }
 
+    public Quiz(Quiz quiz) {
+        this.quizName = quiz.getQuizName();
+        this.questions = new ArrayList<>();
+        //copy questions from quiz
+        for (Question q : quiz.getQuestions()) {
+            this.questions.add(new Question(q));
+        }
+    }
+
+
     public String getQid() {
         return qid;
     }
@@ -68,5 +78,13 @@ public class Quiz implements Serializable {
     public void addQuestion(int position){
         if (questions == null) questions = new ArrayList<>();
         questions.add(position, new Question());
+    }
+
+    public boolean isValidQuiz(){
+        if (questions == null || questions.size() == 0) return false;
+        for (Question q : questions){
+            if (q.getCorrectAnswers().size() == 0) return false;
+        }
+        return true;
     }
 }

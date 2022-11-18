@@ -6,6 +6,7 @@ import android.text.InputFilter;
 import android.text.InputType;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,8 @@ public class QuizOverviewActivity extends AppCompatActivity {
     FloatingActionButton editQuiz;
     FloatingActionButton editQuizName;
 
+    Button takeTestButton;
+
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference cRef = db.collection(Quiz.CollectionName);
     DocumentReference dRef;
@@ -53,6 +56,7 @@ public class QuizOverviewActivity extends AppCompatActivity {
         editQuiz = findViewById(R.id.editButton);
         editQuizName = findViewById(R.id.editQuizNameButton);
 
+        takeTestButton = findViewById(R.id.takeTestButton);
 
         description.setText(quiz.getQuizName());
         questionCount.setText(String.valueOf(quiz.getQuestions().size()));
@@ -66,7 +70,7 @@ public class QuizOverviewActivity extends AppCompatActivity {
             // Specify the type of input expected
             input.setInputType(InputType.TYPE_CLASS_TEXT);
             input.setText(quiz.getQuizName());
-            input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(20)});
+            input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
             builder.setView(input);
             builder.setPositiveButton("confirm", null);
             builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
@@ -75,8 +79,8 @@ public class QuizOverviewActivity extends AppCompatActivity {
             dialog.show();
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
                 String res = input.getText().toString();
-                if (res.length() < 4 || res.length() > 35) {
-                    Toast.makeText(v1.getContext(), "Quiz name has to be at least 5 and at most 35 characters!", Toast.LENGTH_LONG).show();
+                if (res.length() < 4 || res.length() > 30) {
+                    Toast.makeText(v1.getContext(), "Quiz name has to be at least 5 and at most 30 characters!", Toast.LENGTH_SHORT).show();
                     return;
                 }
                 quiz.setQuizName(input.getText().toString());
@@ -87,9 +91,15 @@ public class QuizOverviewActivity extends AppCompatActivity {
         });
 
         editQuiz.setOnClickListener(v -> {
-            Intent editIntent = new Intent(QuizOverviewActivity.this, QuizEditActivity.class);
+            Intent editIntent = new Intent(this, QuizEditActivity.class);
             editIntent.putExtra("quiz", quiz);
             startActivityForResult(editIntent, 1);
+        });
+
+        takeTestButton.setOnClickListener(v -> {
+            Intent takeTestIntent = new Intent(this, takeTestActivity.class);
+            takeTestIntent.putExtra("quiz", quiz);
+            startActivityForResult(takeTestIntent, 1);
         });
     }
 

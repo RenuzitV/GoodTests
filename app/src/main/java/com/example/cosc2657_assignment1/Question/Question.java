@@ -13,8 +13,17 @@ public class Question implements Serializable {
     ArrayList<Answer> answers;
 
     public Question() {
-        this.questionName = "";
+        this.questionName = "Question";
         this.answers = new ArrayList<>();
+    }
+
+    public Question(Question q) {
+        this.questionName = q.getQuestionName();
+        this.answers = new ArrayList<>();
+        //copy answers from question
+        for (Answer a : q.getAnswers()) {
+            this.answers.add(new Answer(a));
+        }
     }
 
     public String getQuestionName() {

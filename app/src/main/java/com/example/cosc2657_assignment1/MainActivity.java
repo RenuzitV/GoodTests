@@ -5,10 +5,15 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -55,10 +60,34 @@ public class MainActivity extends AppCompatActivity implements SwipeToDeleteCall
         });
 
         addNewQuizButton.setOnClickListener(view -> {
-            Quiz quiz = new Quiz();
-            cRef.add(quiz)
-                .addOnSuccessListener(documentReference -> Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId()))
-                .addOnFailureListener(e -> Log.w(TAG, "Error adding document", e));
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setCancelable(true);
+            builder.setTitle("New Quiz Name:");
+            // Set up the input
+            EditText input = new EditText(this);
+            // Specify the type of input expected
+            input.setInputType(InputType.TYPE_CLASS_TEXT);
+            input.setText(R.string.quiz_description_placeholder);
+            input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(30)});
+            builder.setView(input);
+            builder.setPositiveButton("confirm", null);
+            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
+                String res = input.getText().toString();
+                if (res.length() < 4 || res.length() > 30) {
+                    Toast.makeText(v1.getContext(), "Quiz name has to be at least 5 and at most 30 characters!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Quiz quiz = new Quiz();
+                quiz.setQuizName(input.getText().toString());
+                cRef.add(quiz)
+                        .addOnSuccessListener(documentReference -> Toast.makeText(this, "Added Quiz " + quiz.getQuizName(), Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e -> Toast.makeText(this, "Failed to add Quiz " + quiz.getQuizName(), Toast.LENGTH_SHORT).show());
+                dialog.dismiss();
+            });
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

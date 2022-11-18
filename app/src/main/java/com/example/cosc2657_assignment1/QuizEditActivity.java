@@ -119,7 +119,7 @@ public class QuizEditActivity extends AppCompatActivity {
                 Toast.makeText(this, "You do not have any questions for this quiz yet!", Toast.LENGTH_SHORT).show();
             }
             else if (questionIndex >= quiz.getQuestions().size() - 1){
-                questionIndex = quiz.getQuestions().size() - 1;
+                Toast.makeText(this, "This is the last quiz already!", Toast.LENGTH_SHORT).show();
             }
             else {
                 questionIndex += 1;
@@ -175,7 +175,10 @@ public class QuizEditActivity extends AppCompatActivity {
             }
         });
 
-        addAnswerButton.setOnClickListener(v -> adapter.addItem(quiz.getQuestions().get(questionIndex).getAnswers().size()));
+        addAnswerButton.setOnClickListener(v -> {
+            if (quiz.getQuestions().get(questionIndex).getAnswers().size() < 4)adapter.addItem(quiz.getQuestions().get(questionIndex).getAnswers().size());
+            else Toast.makeText(this, "You have too many answers already!", Toast.LENGTH_SHORT).show();
+        });
 
         removeAnswerButton.setOnClickListener(v -> {
             if (quiz.getQuestions().get(questionIndex).getAnswers().size() > 1) adapter.removeItem(quiz.getQuestions().get(questionIndex).getAnswers().size()-1);
@@ -231,6 +234,10 @@ public class QuizEditActivity extends AppCompatActivity {
             return true;
         }
         else if (item.getItemId() == R.id.action_save){
+            if (!quiz.isValidQuiz()){
+                Toast.makeText(this, "Some questions have no correct answers!", Toast.LENGTH_SHORT).show();
+                return true;
+            }
             dRef.set(quiz).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Intent intent = new Intent();

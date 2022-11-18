@@ -75,7 +75,7 @@
         app:srcCompat="@drawable/ic_edit" />
 
     <Button
-        android:id="@+id/TakeTestButton"
+        android:id="@+id/takeTestButton"
         android:layout_width="267dp"
         android:layout_height="70dp"
         android:layout_marginBottom="296dp"

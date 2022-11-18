@@ -11,6 +11,11 @@ public class Answer implements Serializable {
         this.isCorrect = false;
     }
 
+    public Answer(Answer a) {
+        this.answerName = a.getAnswerName();
+        this.isCorrect = a.isCorrect();
+    }
+
     public String getAnswerName() {
         return answerName;
     }
