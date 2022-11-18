@@ -24,6 +24,7 @@ public class Quiz implements Serializable {
     public Quiz() {
         this.quizName = "Assignment 1";
         this.questions = new ArrayList<>();
+        questions.add(new Question());
     }
 
     public Quiz(Quiz quiz) {

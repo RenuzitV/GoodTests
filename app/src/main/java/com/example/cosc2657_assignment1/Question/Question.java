@@ -15,6 +15,7 @@ public class Question implements Serializable {
     public Question() {
         this.questionName = "Question";
         this.answers = new ArrayList<>();
+        answers.add(new Answer());
     }
 
     public Question(Question q) {

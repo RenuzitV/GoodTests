@@ -184,10 +184,8 @@ public class takeTestActivity extends AppCompatActivity {
                 //submitted, now we compare it with quizCopy
                 AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
                 builder1.setTitle("Results");
-                builder1.setMessage("You got " + quizCopy.countCorrectAnswers(quiz) + " out of " + quiz.getQuestions().size() + " correct!");
+                builder1.setMessage("You got " + quizCopy.countCorrectAnswers(quiz) + " out of " + quiz.getQuestions().size() + " questions correct!");
                 builder1.setPositiveButton("confirm", null);
-                builder1.setNegativeButton(android.R.string.cancel, (dialog2, which) -> {
-                });
                 AlertDialog dialog1 = builder1.create();
                 dialog1.show();
                 dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v2 -> {

@@ -85,7 +85,6 @@ public class MainActivity extends AppCompatActivity implements SwipeToDeleteCall
                 }
                 Quiz quiz = new Quiz();
                 quiz.setQuizName(input.getText().toString());
-                quiz.addQuestion(new Question());
                 cRef.add(quiz)
                         .addOnSuccessListener(documentReference -> Toast.makeText(this, "Added Quiz " + quiz.getQuizName(), Toast.LENGTH_SHORT).show())
                         .addOnFailureListener(e -> Toast.makeText(this, "Failed to add Quiz " + quiz.getQuizName(), Toast.LENGTH_SHORT).show());
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements SwipeToDeleteCall
     @Override
     protected void onStart() {
         super.onStart();
-        cRef.addSnapshotListener(this, (value, error) -> {
+        cRef.orderBy(Quiz.QUIZNAME_).addSnapshotListener(this, (value, error) -> {
             if (error != null || value == null){
                 System.out.println("Error loading quizzes, " + error);
             }
@@ -143,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements SwipeToDeleteCall
     }
 
     void refreshData(){
-        cRef.get().addOnCompleteListener(task -> {
+        cRef.orderBy(Quiz.QUIZNAME_).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()){
                 fetchQuizNames(task.getResult().getDocuments());
                 System.out.println("successfully fetched quizzes, got " + quizzes.size() + " quizzes.");
