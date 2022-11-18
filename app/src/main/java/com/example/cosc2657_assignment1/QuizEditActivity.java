@@ -3,8 +3,6 @@ package com.example.cosc2657_assignment1;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputFilter;
-import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -171,7 +169,7 @@ public class QuizEditActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                quiz.getQuestions().get(questionIndex).setQuestionName(s.toString());
+                quiz.getQuestions().get(questionIndex).setQuestionName(s.toString().trim().replace("\n", ""));
             }
         });
 
@@ -211,9 +209,10 @@ public class QuizEditActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu, menu);
+        getMenuInflater().inflate(R.menu.menu_edit_quiz, menu);
         return true;
     }
+
     // this event will enable the back
     // function to the button on press
     @Override
@@ -233,7 +232,7 @@ public class QuizEditActivity extends AppCompatActivity {
             });
             return true;
         }
-        else if (item.getItemId() == R.id.action_save){
+        else if (item.getItemId() == R.id.action_submit){
             if (!quiz.isValidQuiz()){
                 Toast.makeText(this, "Some questions have no correct answers!", Toast.LENGTH_SHORT).show();
                 return true;

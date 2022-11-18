@@ -87,4 +87,12 @@ public class Quiz implements Serializable {
         }
         return true;
     }
+
+    public int countCorrectAnswers(Quiz quiz) {
+        int correct = 0;
+        for (int i = 0; i < questions.size() && i < quiz.getQuestions().size(); i++) {
+            if (quiz.getQuestions().get(i).getAnswers().equals(questions.get(i).getAnswers())) ++correct;
+        }
+        return correct + Math.max(0, questions.size() - quiz.getQuestions().size());
+    }
 }

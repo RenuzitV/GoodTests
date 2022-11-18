@@ -79,11 +79,11 @@ public class QuestionContainerAdapter extends RecyclerView.Adapter<QuestionConta
 
             @Override
             public void afterTextChanged(Editable s) {
-                mData.get(holder.getAdapterPosition()).setAnswerName(s.toString());
+                mData.get(holder.getAdapterPosition()).setAnswerName(s.toString().trim().replace("\n", ""));
             }
         });
 
-        holder.getCheckBox().setActivated(mData.get(position).isCorrect());
+        holder.getCheckBox().setChecked(mData.get(holder.getAdapterPosition()).isCorrect());
         holder.getCheckBox().setOnClickListener(v -> mData.get(holder.getAdapterPosition()).setCorrect(holder.getCheckBox().isChecked()));
     }
 

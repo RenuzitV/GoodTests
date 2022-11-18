@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -143,6 +142,13 @@ public class takeTestActivity extends AppCompatActivity {
         counterText.setText(res);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_take_quiz, menu);
+        return true;
+    }
+
     // this event will enable the back
     // function to the button on press
     @Override
@@ -160,6 +166,34 @@ public class takeTestActivity extends AppCompatActivity {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
                 dialog.dismiss();
                 finish();
+            });
+            return true;
+        }
+        else if (item.getItemId() == R.id.action_submit){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Submit");
+            builder.setMessage("Are you sure you want to submit?");
+            builder.setPositiveButton("confirm", null);
+            builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v1 -> {
+                dialog.dismiss();
+                //submitted, now we compare it with quizCopy
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+                builder1.setTitle("Results");
+                builder1.setMessage("You got " + quizCopy.countCorrectAnswers(quiz) + " out of " + quiz.getQuestions().size() + " correct!");
+                builder1.setPositiveButton("confirm", null);
+                builder1.setNegativeButton(android.R.string.cancel, (dialog2, which) -> {
+                });
+                AlertDialog dialog1 = builder1.create();
+                dialog1.show();
+                dialog1.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v2 -> {
+                    dialog1.dismiss();
+                    finish();
+                });
             });
             return true;
         }

@@ -39,6 +39,7 @@ public class QuestionTestContainerAdapter extends RecyclerView.Adapter<QuestionT
             super(itemView);
             myTextView = itemView.findViewById(R.id.answerDescription2);
             mCheckBox = itemView.findViewById(R.id.checkBox);
+            myTextView.setOnClickListener(v -> mCheckBox.setChecked(!mCheckBox.isChecked()));
             itemView.setOnClickListener(this);
         }
 
@@ -70,7 +71,7 @@ public class QuestionTestContainerAdapter extends RecyclerView.Adapter<QuestionT
         String answerName = mData.get(position).getAnswerName();
         holder.getTextView().setText(answerName);
 
-        holder.getCheckBox().setActivated(mData.get(position).isCorrect());
+        holder.getCheckBox().setChecked(mData.get(position).isCorrect());
         holder.getCheckBox().setOnClickListener(v -> mData.get(holder.getAdapterPosition()).setCorrect(holder.getCheckBox().isChecked()));
     }
 

@@ -18,7 +18,9 @@
         <TextView
             android:id="@+id/textView5"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="8dp"
+            android:gravity="center"
             android:text="@string/dash"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -28,15 +30,15 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="start|center_vertical"
-            android:inputType="textMultiLine|text"
-            android:maxLength="20"
+            android:inputType="text"
+            android:maxLength="30"
             android:text="@string/description"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
         <CheckBox
             android:id="@+id/checkButton"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

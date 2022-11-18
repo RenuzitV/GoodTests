@@ -21,6 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.example.cosc2657_assignment1.Answer.Answer;
+import com.example.cosc2657_assignment1.Question.Question;
 import com.example.cosc2657_assignment1.Quiz.Quiz;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements SwipeToDeleteCall
                 }
                 Quiz quiz = new Quiz();
                 quiz.setQuizName(input.getText().toString());
+                quiz.addQuestion(new Question());
                 cRef.add(quiz)
                         .addOnSuccessListener(documentReference -> Toast.makeText(this, "Added Quiz " + quiz.getQuizName(), Toast.LENGTH_SHORT).show())
                         .addOnFailureListener(e -> Toast.makeText(this, "Failed to add Quiz " + quiz.getQuizName(), Toast.LENGTH_SHORT).show());

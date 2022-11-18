@@ -4,7 +4,7 @@
 
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
-        android:id="@+id/action_save"
+        android:id="@+id/action_submit"
         android:icon="@drawable/ic_save"
         android:title="@string/add_new_answer"
         app:showAsAction="ifRoom"/>
