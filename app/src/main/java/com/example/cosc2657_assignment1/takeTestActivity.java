@@ -56,7 +56,6 @@ public class takeTestActivity extends AppCompatActivity {
 
         counterText = findViewById(R.id.questioncounter);
 
-
         questionName = findViewById(R.id.questionDescription);
         questionItems = findViewById(R.id.questionItems);
         questionItems.setLayoutManager(new LinearLayoutManager(this));
